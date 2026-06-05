@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="ext-resource-dependency" content="images/hero.jpg" data-resource-id="heroImg"/>
+<meta name="ext-resource-dependency" content="images/highlightsThumb.jpg" data-resource-id="highlightsThumbImg"/>
+<meta name="ext-resource-dependency" content="images/dishSpinach.jpg" data-resource-id="dishSpinachImg"/>
+<meta name="ext-resource-dependency" content="images/dishFish.jpg" data-resource-id="dishFishImg"/>
+<meta name="ext-resource-dependency" content="images/dishCeviche.jpg" data-resource-id="dishCevicheImg"/>
+<meta name="ext-resource-dependency" content="images/dishEmpanadas.jpg" data-resource-id="dishEmpanadasImg"/>
+<meta name="ext-resource-dependency" content="images/reviewer1.jpg" data-resource-id="reviewer1Img"/>
+<meta name="ext-resource-dependency" content="images/reviewer2.jpg" data-resource-id="reviewer2Img"/>
+<meta name="ext-resource-dependency" content="images/reviewer3.jpg" data-resource-id="reviewer3Img"/>
+<title>Ceibo — Restaurant Business Page</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+    font-family: -apple-system, system-ui, sans-serif;
+  }
+  .tweaks-panel {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #fff; border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.06);
+    width: 280px; overflow: hidden;
+    font-family: -apple-system, system-ui, sans-serif;
+    display: none;
+  }
+  .tweaks-panel.open { display: block; }
+  .tweaks-header {
+    padding: 14px 16px 10px;
+    font-size: 13px; font-weight: 700; color: #111;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tweaks-section {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .tweaks-label {
+    font-size: 11px; font-weight: 600; color: #999;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .tweak-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .tweak-chip {
+    padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    border: 1.5px solid #e0e0e0; background: #fff; color: #444;
+    cursor: pointer; transition: all 0.12s;
+  }
+  .tweak-chip.active {
+    border-color: #d32323; background: #d32323; color: #fff;
+  }
+  .tweak-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .tweak-toggle:last-child { margin-bottom: 0; }
+  .tweak-toggle-label { font-size: 13px; color: #222; }
+  .toggle-switch {
+    width: 38px; height: 22px; border-radius: 11px;
+    background: #ddd; position: relative; cursor: pointer;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .toggle-switch.on { background: #d32323; }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .toggle-switch.on::after { transform: translateX(16px); }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#1a1a1a">
+  <svg viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="844" fill="#1a1a1a"/>
+    <rect width="390" height="220" fill="#3d2510"/>
+    <text x="195" y="140" font-size="48" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui">Ceibo</text>
+    <circle cx="195" cy="400" r="80" fill="#d32323" opacity="0.15"/>
+    <circle cx="195" cy="400" r="60" fill="#d32323" opacity="0.25"/>
+    <circle cx="195" cy="400" r="40" fill="#d32323"/>
+    <text x="195" y="410" font-size="32" fill="#fff" text-anchor="middle" font-family="system-ui">🍷</text>
+  </svg>
+</template>
+<div id="root"></div>
+
+<script>
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "density": "compact",
+  "hoursStyle": "inline",
+  "ratingStyle": "stars",
+  "menuLayout": "scroll",
+  "showAISummary": false,
+  "showRecommend": true,
+  "showHighlights": true,
+  "reviewLength": "full"
+}/*EDITMODE-END*/;
+</script>
+
+<script type="text/babel">
+
+const YELP_RED = '#d32323';
+const STAR_COLOR = '#ff3a2d';
+
+// ── Image refs ──────────────────────────────────────────────────────
+const IMAGES = {
+  hero:             window.__resources?.heroImg || 'images/hero.jpg',
+  highlightsThumb:  window.__resources?.highlightsThumbImg || 'images/highlightsThumb.jpg',
+  dishSpinach:      window.__resources?.dishSpinachImg || 'images/dishSpinach.jpg',
+  dishFish:         window.__resources?.dishFishImg || 'images/dishFish.jpg',
+  dishCeviche:      window.__resources?.dishCevicheImg || 'images/dishCeviche.jpg',
+  dishEmpanadas:    window.__resources?.dishEmpanadasImg || 'images/dishEmpanadas.jpg',
+  reviewer1:        window.__resources?.reviewer1Img || 'images/reviewer1.jpg',
+  reviewer2:        window.__resources?.reviewer2Img || 'images/reviewer2.jpg',
+  reviewer3:        window.__resources?.reviewer3Img || 'images/reviewer3.jpg',
+};
+
+// ── Img w/ object-fit cover + onError fallback ────────────────
+function Img({ src, alt, style = {}, eager = false, overlay = false, overlayDir = 'to top' }) {
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', ...style }}>
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      />
+      {overlay && (
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(${overlayDir}, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)`, pointerEvents: 'none' }}/>
+      )}
+    </div>
+  );
+}
+
+// ── Tweak context ─────────────────────────────────────────────
+const TweakCtx = React.createContext(TWEAK_DEFAULTS);
+function useTweaks() { return React.useContext(TweakCtx); }
+
+// ── Stars ──────────────────────────────────────────────────────
+function Stars({ rating = 4.9, size = 18 }) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  return (
+    <div style={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      {[...Array(5)].map((_, i) => {
+        const filled = i < full;
+        const isHalf = !filled && i === full && half;
+        return (
+          <svg key={i} width={size} height={size} viewBox="0 0 20 20">
+            <defs>
+              {isHalf && <linearGradient id={`h${i}`}><stop offset="50%" stopColor={STAR_COLOR}/><stop offset="50%" stopColor="#ccc"/></linearGradient>}
+            </defs>
+            <path d="M10 1l2.4 6.4H19l-5.3 4 2 6.3L10 14.1l-5.7 3.6 2-6.3L1 7.4h6.6z"
+              fill={filled ? STAR_COLOR : isHalf ? `url(#h${i})` : '#ccc'}/>
+          </svg>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Food Photo (image w/ color fallback) ───────────────────
+function FoodPhoto({ label, bg = '#8B6B4A', src, style = {} }) {
+  return (
+    <div style={{ background: `linear-gradient(135deg, ${bg}cc, ${bg}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', ...style }}>
+      {src && (
+        <img src={src} alt={label.replace('\n', ' ')} loading="lazy"
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}/>
+      )}
+    </div>
+  );
+}
+
+// ── Hero ──────────────────────────────────────────────────────
+function HeroPhoto() {
+  const { ratingStyle } = useTweaks();
+  const renderRating = () => {
+    if (ratingStyle === 'stars') return <Stars rating={4.9} size={17}/>;
+    if (ratingStyle === 'sentiment') return (
+      <span style={{ background: '#2d8f5e', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 6, padding: '2px 8px' }}>Excellent</span>
+    );
+    return <>
+      <Stars rating={4.9} size={17}/>
+      <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, color: '#fff', fontWeight: 500 }}>4.9 (78 reviews)</span>
+    </>;
+  };
+  return (
+    <div style={{ position: 'relative', width: '100%', height: 220, background: 'linear-gradient(160deg, #2a1a0e 0%, #3d2510 40%, #5c3a1e 70%, #3a2510 100%)' }}>
+      <img src={IMAGES.hero} alt="Ceibo restaurant interior — dim wine bar" loading="eager"
+        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}/>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.25) 100%)' }}/>
+      <div style={{ position: 'absolute', bottom: 36, left: 14 }}>
+        <div style={{ fontFamily: '-apple-system, system-ui', fontWeight: 800, fontSize: 30, color: '#fff', letterSpacing: -0.5, textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>Ceibo</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>{renderRating()}</div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(2px)', height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, color: '#fff', fontWeight: 500 }}>See all 303 photos</span>
+      </div>
+    </div>
+  );
+}
+
+// ── AI Summary card ───────────────────────────────────────────
+function AISummaryCard() {
+  return (
+    <div style={{ margin: '10px 14px', padding: '10px 12px', borderRadius: 12, background: 'linear-gradient(135deg, #fff8f0, #fff3f3)', border: '1px solid #fde0d0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill={YELP_RED}><path d="M12 2l1.5 7.5L21 11l-7.5 1.5L12 20l-1.5-7.5L3 11l7.5-1.5z"/></svg>
+        <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 12, fontWeight: 700, color: YELP_RED }}>AI Summary</span>
+      </div>
+      <p style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, color: '#333', lineHeight: 1.5 }}>
+        A romantic, dimly-lit wine bar in Adams Morgan. Known for creative South American–Mediterranean small plates, exceptional wine selection, and a warm atmosphere. Best for date nights and intimate dinners.
+      </p>
+      <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        {['🍷 Great wine', '🌿 Vegetarian options', '🌙 Good for dates'].map(tag => (
+          <span key={tag} style={{ fontSize: 11, padding: '3px 8px', borderRadius: 12, background: '#fff', border: '1px solid #f0d0c0', color: '#555', fontWeight: 500 }}>{tag}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Hours display variants ────────────────────────────────────
+function HoursDisplay() {
+  const { hoursStyle } = useTweaks();
+  if (hoursStyle === 'badge') return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+      <span style={{ background: '#fde8e8', color: YELP_RED, fontSize: 12, fontWeight: 700, borderRadius: 6, padding: '3px 8px' }}>Closed</span>
+      <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, color: '#555' }}>Opens 5:00 PM</span>
+      <span style={{ color: '#0073bb', fontSize: 13, fontWeight: 500 }}>· See hours</span>
+    </div>
+  );
+  if (hoursStyle === 'expanded') return (
+    <div style={{ marginTop: 6, borderRadius: 10, overflow: 'hidden', border: '1px solid #ebebeb' }}>
+      {[['Mon–Thu','5:00 PM – 11:00 PM'],['Fri','5:00 PM – 12:00 AM'],['Sat','4:00 PM – 12:00 AM'],['Sun','4:00 PM – 10:00 PM']].map(([day, hrs], i) => (
+        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', background: i % 2 === 0 ? '#fafafa' : '#fff', fontSize: 12, color: i === 0 ? YELP_RED : '#333', fontWeight: i === 0 ? 600 : 400, fontFamily: '-apple-system, system-ui' }}>
+          <span>{day}</span><span>{hrs}</span>
+        </div>
+      ))}
+    </div>
+  );
+  return (
+    <p style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, marginTop: 2 }}>
+      <span style={{ color: YELP_RED, fontWeight: 700 }}>Closed</span>
+      <span style={{ color: '#333' }}> until 5:00 PM · </span>
+      <span style={{ color: '#0073bb', fontWeight: 500 }}>See hours</span>
+    </p>
+  );
+}
+
+// ── Watch Highlights ──────────────────────────────────────────
+function WatchHighlights() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 14px', borderBottom: '1px solid #ebebeb' }}>
+      <div style={{ width: 58, height: 58, borderRadius: 10, flexShrink: 0, background: 'radial-gradient(ellipse at 40% 40%, #3d2510, #1a0e06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+        <img src={IMAGES.highlightsThumb} alt="Watch highlights preview" loading="lazy"
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}/>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.45))' }}/>
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+          <svg width="12" height="14" viewBox="0 0 12 14" fill="#111"><path d="M1 1l10 6-10 6V1z"/></svg>
+        </div>
+      </div>
+      <div style={{ flex: 1, paddingTop: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 15, fontWeight: 700, color: '#111' }}>Watch Highlights</span>
+          <span style={{ background: '#2d8f5e', color: '#fff', fontSize: 10, fontWeight: 700, borderRadius: 4, padding: '1px 5px' }}>New</span>
+        </div>
+        <p style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, color: '#444', lineHeight: 1.4, marginTop: 2 }}>
+          Cozy spot in Adams Morgan blending South American and Mediterranean flavors.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── Action buttons ────────────────────────────────────────────
+function ActionButtons() {
+  const [saved, setSaved] = React.useState(false);
+  const Btn = ({ icon, label, red, onClick, active }) => (
+    <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 8, border: `1.5px solid ${red ? YELP_RED : '#d0d0d0'}`, background: red ? YELP_RED : '#fff', color: red ? '#fff' : active ? YELP_RED : '#111', fontFamily: '-apple-system, system-ui', fontSize: 13, fontWeight: 600, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}>
+      {icon}{label}
+    </button>
+  );
+  return (
+    <div style={{ display: 'flex', gap: 8, padding: '10px 14px', overflowX: 'auto', borderBottom: '1px solid #ebebeb' }}>
+      <Btn red icon={<svg width="14" height="14" viewBox="0 0 20 20"><path d="M10 1l2.4 6.4H19l-5.3 4 2 6.3L10 14.1l-5.7 3.6 2-6.3L1 7.4h6.6z" fill="white"/></svg>} label="Add review"/>
+      <Btn icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>} label="Website"/>
+      <Btn icon={<svg width="13" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>} label="Map"/>
+      <Btn active={saved} onClick={() => setSaved(s => !s)} icon={<svg width="12" height="15" viewBox="0 0 24 24" fill={saved ? YELP_RED : 'none'} stroke={saved ? YELP_RED : '#444'} strokeWidth="2" strokeLinecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>} label="Save"/>
+    </div>
+  );
+}
+
+// ── Recommend section ─────────────────────────────────────────
+function RecommendSection() {
+  const [choice, setChoice] = React.useState(null);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderBottom: '1px solid #ebebeb' }}>
+      <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, fontWeight: 700, color: '#111', lineHeight: 1.3, width: 90, flexShrink: 0 }}>Recommend this place?</div>
+      <div style={{ display: 'flex', gap: 7 }}>
+        {['Yes', 'No', 'Maybe'].map(opt => (
+          <button key={opt} onClick={() => setChoice(opt)} style={{ padding: '6px 13px', borderRadius: 20, border: `1.5px solid ${choice === opt ? '#333' : '#d0d0d0'}`, background: choice === opt ? '#111' : '#fff', color: choice === opt ? '#fff' : '#333', fontFamily: '-apple-system, system-ui', fontSize: 13, fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s' }}>{opt}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Tab bar ───────────────────────────────────────────────────
+function TabBar({ active, onTab }) {
+  const tabs = ['Menu', 'Info', 'Reviews', 'More like this'];
+  return (
+    <div style={{ display: 'flex', borderBottom: '1.5px solid #ebebeb', background: '#fff', position: 'sticky', top: 0, zIndex: 10 }}>
+      {tabs.map(t => (
+        <button key={t} onClick={() => onTab(t)} style={{ flex: t === 'More like this' ? 1.3 : 1, padding: '10px 0', fontFamily: '-apple-system, system-ui', fontSize: 13, fontWeight: 600, color: active === t ? '#111' : '#888', background: 'none', border: 'none', cursor: 'pointer', borderBottom: active === t ? `2px solid ${YELP_RED}` : '2px solid transparent', marginBottom: -1.5, whiteSpace: 'nowrap' }}>{t}</button>
+      ))}
+    </div>
+  );
+}
+
+// ── Menu tab ──────────────────────────────────────────────────
+function MenuContent() {
+  const { menuLayout, density } = useTweaks();
+  const pad = density === 'compact' ? '6px 14px' : density === 'roomy' ? '16px 14px' : '10px 14px';
+  const dishes = [
+    { label: 'Spinach &\nRicotta', bg: '#4a6741', src: IMAGES.dishSpinach },
+    { label: 'Breaded\nFish',      bg: '#7a6b4a', src: IMAGES.dishFish },
+    { label: 'Ceviche',            bg: '#3d6b5e', src: IMAGES.dishCeviche },
+    { label: 'Empanadas',          bg: '#7a4a2a', src: IMAGES.dishEmpanadas },
+  ];
+  const menuItems = {
+    'Small Plates': [
+      { name: 'Spinach & Ricotta', desc: 'Seasonal greens, housemade', price: '$16' },
+      { name: 'Ceviche de la Casa', desc: "Tiger's milk, sweet potato", price: '$18' },
+    ],
+    'Mains': [
+      { name: 'Grilled Sea Bass', desc: 'Market price · Ask server', price: '$32' },
+      { name: 'Lamb Shoulder', desc: 'Slow-roasted, chimichurri', price: '$38' },
+    ],
+    'Desserts': [
+      { name: 'Chocolate Fondant', desc: 'Served warm', price: '$12' },
+      { name: 'Crème Brûlée', desc: 'Vanilla, caramelized', price: '$11' },
+    ],
+  };
+
+  return (
+    <div style={{ padding: '14px 0 80px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 14px', marginBottom: 10 }}>
+        <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 20, fontWeight: 800, color: '#111' }}>Menu</span>
+        <span style={{ fontSize: 18, color: '#555' }}>→</span>
+      </div>
+      <p style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, fontWeight: 700, color: '#111', padding: '0 14px', marginBottom: 10 }}>Popular Dishes</p>
+
+      {menuLayout === 'scroll' ? (
+        <div style={{ display: 'flex', gap: 8, padding: '0 14px', overflowX: 'auto' }}>
+          {dishes.map((d, i) => (
+            <div key={i} style={{ width: 140, height: 120, flexShrink: 0, borderRadius: 10, overflow: 'hidden' }}>
+              <FoodPhoto label={d.label} bg={d.bg} src={d.src} style={{ width: '100%', height: '100%' }}/>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, padding: '0 14px' }}>
+          {dishes.map((d, i) => (
+            <div key={i} style={{ borderRadius: 10, overflow: 'hidden' }}>
+              <FoodPhoto label={d.label} bg={d.bg} src={d.src} style={{ width: '100%', height: 90 }}/>
+              <div style={{ padding: '6px 8px', background: '#fff', border: '1px solid #f0f0f0', borderTop: 'none', borderRadius: '0 0 10px 10px' }}>
+                <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 12, fontWeight: 600, color: '#111' }}>{d.label.replace('\n', ' ')}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {Object.entries(menuItems).map(([section, items]) => (
+        <div key={section} style={{ marginTop: 20 }}>
+          <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 15, fontWeight: 700, color: '#111', padding: '0 14px 8px', borderBottom: '1px solid #ebebeb' }}>{section}</div>
+          {items.map((item, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: pad, borderBottom: '1px solid #f5f5f5', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, fontWeight: 600, color: '#111' }}>{item.name}</div>
+                {density !== 'compact' && <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 12, color: '#888', marginTop: 2 }}>{item.desc}</div>}
+              </div>
+              <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, fontWeight: 600, color: '#333', flexShrink: 0, marginLeft: 8 }}>{item.price}</div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Reviews tab ───────────────────────────────────────────────
+function ReviewsContent() {
+  const { reviewLength, density } = useTweaks();
+  const reviews = [
+    { name: 'Alexandra M.', avatar: IMAGES.reviewer1, rating: 5, date: '2 weeks ago', text: 'Absolutely stunning food. The spinach and ricotta dish is a must-try — perfectly balanced flavors that transport you.', short: 'Stunning food. Spinach & ricotta is a must-try.' },
+    { name: 'Carlos T.',    avatar: IMAGES.reviewer2, rating: 5, date: '1 month ago',  text: "Best wine bar in Adams Morgan. The Mediterranean–South American fusion is unlike anything I've had before.", short: "Best wine bar in Adams Morgan." },
+    { name: 'Priya K.',     avatar: IMAGES.reviewer3, rating: 4, date: '3 months ago', text: 'Cozy atmosphere, attentive service. The dessert menu is exceptional and the wine pairings are spot on.', short: 'Cozy atmosphere, exceptional dessert menu.' },
+  ];
+  const pad = density === 'compact' ? '10px 14px' : density === 'roomy' ? '18px 14px' : '14px';
+  return (
+    <div style={{ padding: '14px 0 80px' }}>
+      <div style={{ padding: '0 14px 12px', borderBottom: '1px solid #ebebeb' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Stars rating={4.9} size={14}/>
+          <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, fontWeight: 700, color: '#111' }}>4.9</span>
+          <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, color: '#888' }}>· 78 reviews</span>
+        </div>
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {[['⭐ Food', '5.0'], ['🍷 Drinks', '4.9'], ['🌿 Ambiance', '4.8']].map(([label, val]) => (
+            <div key={label} style={{ padding: '4px 10px', borderRadius: 20, background: '#f5f5f5', fontFamily: '-apple-system, system-ui', fontSize: 12 }}>
+              <span style={{ color: '#555' }}>{label}</span>
+              <span style={{ fontWeight: 700, color: '#111', marginLeft: 4 }}>{val}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {reviews.map((r, i) => (
+        <div key={i} style={{ padding: pad, borderBottom: '1px solid #ebebeb' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: `hsl(${i * 80 + 200}, 40%, 55%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={r.avatar} alt={`${r.name} avatar`} loading="lazy"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+            </div>
+            <div>
+              <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, fontWeight: 700, color: '#111' }}>{r.name}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Stars rating={r.rating} size={12}/>
+                <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 11, color: '#888' }}>{r.date}</span>
+              </div>
+            </div>
+          </div>
+          <p style={{ fontFamily: '-apple-system, system-ui', fontSize: 13, color: '#333', lineHeight: 1.5 }}>{reviewLength === 'short' ? r.short : r.text}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Info tab ──────────────────────────────────────────────────
+function InfoContent() {
+  const { density } = useTweaks();
+  const pad = density === 'compact' ? '8px 14px' : density === 'roomy' ? '16px 14px' : '12px 14px';
+  const rows = [
+    { icon: '🕐', label: 'Hours', value: 'Mon–Fri: 5pm–11pm\nSat–Sun: 4pm–11pm' },
+    { icon: '📍', label: 'Address', value: '2253 18th St NW\nWashington, DC 20009' },
+    { icon: '📞', label: 'Phone', value: '(202) 555-0192' },
+    { icon: '🌐', label: 'Website', value: 'ceiboadamsmorgan.com' },
+    { icon: '💰', label: 'Price Range', value: '$$$' },
+    { icon: '🅿️', label: 'Parking', value: 'Street parking available' },
+  ];
+  return (
+    <div style={{ padding: '14px 0 80px' }}>
+      {rows.map((r, i) => (
+        <div key={i} style={{ display: 'flex', gap: 12, padding: pad, borderBottom: '1px solid #ebebeb', alignItems: 'flex-start' }}>
+          <span style={{ fontSize: 18, width: 22, textAlign: 'center', marginTop: 1 }}>{r.icon}</span>
+          <div>
+            <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 12, color: '#888', marginBottom: 2 }}>{r.label}</div>
+            <div style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, color: '#111', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{r.value}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Bottom nav ────────────────────────────────────────────────
+function BottomNav() {
+  const items = [{ label: 'Search', badge: null }, { label: 'Projects', badge: 12 }, { label: 'Assistant', badge: null }, { label: 'Collections', badge: null }, { label: 'Me', badge: 37 }];
+  const SearchIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={YELP_RED} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>;
+  const GridIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>;
+  const SparkIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="#888"><path d="M12 2l1.5 7.5L21 11l-7.5 1.5L12 20l-1.5-7.5L3 11l7.5-1.5z"/></svg>;
+  const BookmarkIcon = () => <svg width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.8" strokeLinecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>;
+  const PersonIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>;
+  const icons = [SearchIcon, GridIcon, SparkIcon, BookmarkIcon, PersonIcon];
+  return (
+    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: '#fff', borderTop: '1px solid #ebebeb', display: 'flex', padding: '8px 0 20px', zIndex: 20 }}>
+      {items.map((item, i) => {
+        const Icon = icons[i];
+        return (
+          <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, cursor: 'pointer' }}>
+            <div style={{ position: 'relative' }}>
+              <Icon/>
+              {item.badge !== null && <div style={{ position: 'absolute', top: -4, right: -6, background: YELP_RED, color: '#fff', fontSize: 9, fontWeight: 700, borderRadius: 9, padding: '1px 4px', minWidth: 16, textAlign: 'center', fontFamily: '-apple-system, system-ui' }}>{item.badge}</div>}
+            </div>
+            <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 10, color: i === 0 ? YELP_RED : '#888', fontWeight: i === 0 ? 600 : 400 }}>{item.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Status / nav chrome ───────────────────────────────────────
+function StatusBar() {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px 4px', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30 }}>
+      <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 15, fontWeight: 600, color: '#fff' }}>12:11</span>
+      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="7" width="3" height="5" rx="0.8" fill="white" fillOpacity="0.4"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="0.8" fill="white" fillOpacity="0.4"/><rect x="9" y="2" width="3" height="10" rx="0.8" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="0.8" fill="white"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" fill="white"/><path d="M3.5 6.5C5 5 6.4 4.2 8 4.2s3 .8 4.5 2.3" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/><path d="M1 4C3 2 5.4 1 8 1s5 1 7 3" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3" stroke="white" strokeOpacity="0.5" fill="none"/><rect x="2" y="2" width="18" height="9" rx="1.5" fill="white"/><path d="M24 4.5v4c.8-.3 1.5-1.1 1.5-2s-.7-1.7-1.5-2z" fill="white" fillOpacity="0.4"/></svg>
+      </div>
+    </div>
+  );
+}
+function TopNav() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 14px', background: 'transparent', position: 'absolute', top: 50, left: 0, right: 0, zIndex: 20 }}>
+      <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+        <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M7 1L1 6.5L7 12" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
+        <span style={{ fontFamily: '-apple-system, system-ui', fontSize: 16, color: '#fff', fontWeight: 500 }}>Search</span>
+      </button>
+      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        <svg width="16" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>
+        <svg width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <svg width="18" height="5" viewBox="0 0 20 5" fill="#fff"><circle cx="2.5" cy="2.5" r="2.5"/><circle cx="10" cy="2.5" r="2.5"/><circle cx="17.5" cy="2.5" r="2.5"/></svg>
+      </div>
+    </div>
+  );
+}
+
+// ── Tweaks Panel ──────────────────────────────────────────────
+function TweaksPanel({ tweaks, setTweaks, visible }) {
+  const set = (key, val) => {
+    const next = { ...tweaks, [key]: val };
+    setTweaks(next);
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: next }, '*');
+  };
+  const toggle = (key) => set(key, !tweaks[key]);
+
+  const Chips = ({ label, optKey, options }) => (
+    <div className="tweaks-section">
+      <div className="tweaks-label">{label}</div>
+      <div className="tweak-chips">
+        {options.map(([val, display]) => (
+          <button key={val} className={`tweak-chip ${tweaks[optKey] === val ? 'active' : ''}`} onClick={() => set(optKey, val)}>{display}</button>
+        ))}
+      </div>
+    </div>
+  );
+  const Toggle = ({ label, optKey }) => (
+    <div className="tweak-toggle">
+      <span className="tweak-toggle-label">{label}</span>
+      <div className={`toggle-switch ${tweaks[optKey] ? 'on' : ''}`} onClick={() => toggle(optKey)}/>
+    </div>
+  );
+
+  if (!visible) return null;
+  return (
+    <div className="tweaks-panel open">
+      <div className="tweaks-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={YELP_RED} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Tweaks
+      </div>
+      <Chips label="Info Density" optKey="density" options={[['compact','Compact'],['default','Default'],['roomy','Roomy']]}/>
+      <Chips label="Hours Display" optKey="hoursStyle" options={[['inline','Inline'],['badge','Badge'],['expanded','Expanded']]}/>
+      <Chips label="Rating Style" optKey="ratingStyle" options={[['stars','Stars only'],['stars+text','Stars + count'],['sentiment','Sentiment tag']]}/>
+      <Chips label="Menu Layout" optKey="menuLayout" options={[['scroll','Horizontal scroll'],['grid','Grid']]}/>
+      <Chips label="Review Length" optKey="reviewLength" options={[['short','Snippet'],['full','Full text']]}/>
+      <div className="tweaks-section">
+        <div className="tweaks-label">Show / Hide Sections</div>
+        <Toggle label="AI Summary" optKey="showAISummary"/>
+        <Toggle label="Watch Highlights" optKey="showHighlights"/>
+        <Toggle label="Recommend this place?" optKey="showRecommend"/>
+      </div>
+    </div>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────
+function App() {
+  const [activeTab, setActiveTab] = React.useState('Menu');
+  const [tweaks, setTweaks] = React.useState({ ...TWEAK_DEFAULTS });
+  const [tweaksOpen, setTweaksOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  return (
+    <TweakCtx.Provider value={tweaks}>
+      <div style={{ width: 390, height: 844, borderRadius: 44, overflow: 'hidden', background: '#fff', position: 'relative', boxShadow: '0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.2)', fontFamily: '-apple-system, system-ui, sans-serif', WebkitFontSmoothing: 'antialiased' }}>
+        <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', width: 120, height: 34, borderRadius: 20, background: '#000', zIndex: 50 }}/>
+        <StatusBar/>
+        <TopNav/>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto', paddingBottom: 70 }}>
+          <HeroPhoto/>
+          <div style={{ background: '#fff' }}>
+            <div style={{ padding: '10px 14px', borderBottom: tweaks.showAISummary ? 'none' : '1px solid #ebebeb' }}>
+              <p style={{ fontFamily: '-apple-system, system-ui', fontSize: 14, color: '#333' }}>Wine Bars, Modern European, Desserts</p>
+              <HoursDisplay/>
+            </div>
+            {tweaks.showAISummary && <AISummaryCard/>}
+            {tweaks.showAISummary && <div style={{ height: 1, background: '#ebebeb' }}/>}
+            {tweaks.showHighlights && <WatchHighlights/>}
+            <ActionButtons/>
+            {tweaks.showRecommend && <RecommendSection/>}
+            <TabBar active={activeTab} onTab={setActiveTab}/>
+            {activeTab === 'Menu' && <MenuContent/>}
+            {activeTab === 'Info' && <InfoContent/>}
+            {activeTab === 'Reviews' && <ReviewsContent/>}
+            {activeTab === 'More like this' && <div style={{ padding: 30, textAlign: 'center', color: '#888', fontFamily: '-apple-system, system-ui' }}>Similar restaurants nearby</div>}
+          </div>
+        </div>
+        <BottomNav/>
+      </div>
+      <TweaksPanel tweaks={tweaks} setTweaks={setTweaks} visible={tweaksOpen}/>
+    </TweakCtx.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
